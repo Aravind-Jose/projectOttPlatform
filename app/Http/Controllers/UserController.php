@@ -63,12 +63,11 @@ class UserController extends Controller
     public function login(Request $request)
     {
         $request->validate([
-            'email' => 'required',
             'password' => 'required',
         ]);
    
-        $credentials = $request->only('email', 'password');
-        if (Auth::attempt($credentials)) {
+        $credentials = $request->only('email', 'password','phoneNo');
+        if ((Auth::attempt(['email' => $credentials['email'], 'password' => $credentials['password']])) || (Auth::attempt(['phoneNo' => $credentials['phoneNo'], 'password' => $credentials['password']])) ) {
             return view('home');
         }
         else{
@@ -81,6 +80,8 @@ class UserController extends Controller
     function registrationView() {
         return view('registration');
     }
+    
+
     /**
      * Display the specified resource.
      */

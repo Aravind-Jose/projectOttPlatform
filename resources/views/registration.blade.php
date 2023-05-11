@@ -1,7 +1,7 @@
 <!doctype html>
 <html lang="en">
   <head>
-  @if($errors->any())
+    @if($errors->any())
   <h4>{{$errors->first()}}</h4>
 @endif
     <meta charset="utf-8">

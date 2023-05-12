@@ -6,6 +6,8 @@ use Illuminate\Support\Facades\Auth;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
+use App\Http\Controllers\MovieListController;
+Use Exception;
 class UserController extends Controller
 {
     /**
@@ -22,7 +24,8 @@ class UserController extends Controller
     public function create(array $data)
     {
         return User::create([
-            'name'=>"sad",
+            'name'=>$data['name'],
+            'subscription'=>false,
             'email' => $data['email'],
             'phoneNo'=>$data['phoneNo'],
             'password' => Hash::make($data['password'])
@@ -55,9 +58,20 @@ class UserController extends Controller
         if ($validatorEmail->fails()) {
             return back()->withErrors(['message'=>'PhoneNo did not satisify the criteria']);
         }
-        $data = $request->all();
-        $check = $this->create($data);
-        return view('home');
+        try{
+            $request->validate([
+                'password' => 'required|min:8',
+                'email' => 'required|email',
+                'phoneNo' => 'required|min:10',
+
+            ]);
+            $data = $request->all();
+            $check = $this->create($data);
+            return view('login');
+        }
+        catch(Exception $e){
+            return back()->with(['message'=>'PhoneNo&Email should be unique']);
+        }
         
     }
     public function login(Request $request)
@@ -68,7 +82,7 @@ class UserController extends Controller
    
         $credentials = $request->only('email', 'password','phoneNo');
         if ((Auth::attempt(['email' => $credentials['email'], 'password' => $credentials['password']])) || (Auth::attempt(['phoneNo' => $credentials['phoneNo'], 'password' => $credentials['password']])) ) {
-            return view('home');
+            return redirect()->intended(route('home'));
         }
         else{
             return view('registration');
@@ -82,35 +96,7 @@ class UserController extends Controller
     }
     
 
-    /**
-     * Display the specified resource.
-     */
-    public function show(User $user)
-    {
-        //
-    }
+    
 
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(User $user)
-    {
-        //
-    }
 
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, User $user)
-    {
-        //
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(User $user)
-    {
-        //
-    }
 }

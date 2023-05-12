@@ -2,6 +2,7 @@
 
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\UserController;
+use App\Http\Controllers\MovieListController;
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -13,7 +14,8 @@ use App\Http\Controllers\UserController;
 |
 */
 
-Route::get('/',[UserController::class, 'homeView'])->name('home');
+Route::get('/home',[MovieListController::class, 'movieListView'])->name('home');
+Route::get('/movie/{name}',[MovieListController::class, 'movieView'])->name('movie');
 Route::get('/login', [UserController::class, 'loginView']);
 Route::post('/login', [UserController::class, 'login'])->name('login');
 Route::get('/registration', [UserController::class, 'registrationView']);

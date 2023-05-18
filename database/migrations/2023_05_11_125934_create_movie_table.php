@@ -17,7 +17,6 @@ return new class extends Migration
             $table->string('language');
             $table->boolean('subscription');
             $table->integer('year');
-            $table->timestamps();
         });
     }
 

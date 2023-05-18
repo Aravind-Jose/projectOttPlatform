@@ -17,6 +17,7 @@
     <label for="exampleInputEmail1" class="form-label">Email address </label>
     <input name="email" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp">
   </div>
+  <h4>OR</h4>
   <div class="mb-3">
     <label for="exampleInputEmail1" class="form-label">Phone Number </label>
     <input name="phoneNo" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp">

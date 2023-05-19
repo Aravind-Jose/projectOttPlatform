@@ -1,9 +1,11 @@
 <!doctype html>
 <html lang="en">
   <head>
-  @if($errors->any())
-  <h4>{{$errors->first()}}</h4>
-@endif
+  @if($errors)
+    @foreach($errors->all() as $error)
+      <li>{{$error}}</li>
+    @endforeach
+    @endif
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-rbsA2VBKQhggwzxH7pPCaAqO46MgnOM80zW1RWuH61DGLwZJEdK2Kadq2F9CUG65" crossorigin="anonymous">

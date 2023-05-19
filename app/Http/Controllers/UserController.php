@@ -5,7 +5,7 @@ use Hash;
 use Illuminate\Support\Facades\Auth;
 use App\Models\User;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Validator;
+use \Validator;
 use App\Http\Controllers\MovieListController;
 Use Exception;
 class UserController extends Controller
@@ -37,46 +37,60 @@ class UserController extends Controller
      */
     public function registration(Request $request)
     {
-        $validatorPassword = Validator::make($request->all(),
-            [
-                'password' => 'required|min:8',]
-        );
-        if ($validatorPassword->fails()) {
-            return back()->withErrors(['message'=>'Password did not satisify the criteria']);
-        }
-        $validatorEmail = Validator::make($request->all(),
-            [
-                'email' => 'required|email',]
-        );
-        if ($validatorEmail->fails()) {
-            return back()->withErrors(['message'=>'Email did not satisify the criteria']);
-        }
-        $validatorPhoneNo = Validator::make($request->all(),
-            [
-                'phoneNo' => 'required|min:10',]
-        );
-        if ($validatorEmail->fails()) {
-            return back()->withErrors(['message'=>'PhoneNo did not satisify the criteria']);
-        }
-        try{
+        // $validatorPassword = Validator::make($request->all(),
+        //     [
+        //         'password' => 'required|min:8',]
+        // );
+        // if ($validatorPassword->fails()) {
+        //     return back()->withErrors(['message'=>'Password did not satisify the criteria']);
+        // }
+        // $validatorEmail = Validator::make($request->all(),
+        //     [
+        //         'email' => 'required|email',]
+        // );
+        // if ($validatorEmail->fails()) {
+        //     return back()->withErrors(['message'=>'Email did not satisify the criteria']);
+        // }
+        // $validatorPhoneNo = Validator::make($request->all(),
+        //     [
+        //         'phoneNo' => 'required|min:10',]
+        // );
+        // if ($validatorEmail->fails()) {
+        //     return back()->withErrors(['message'=>'PhoneNo did not satisify the criteria']);
+        // }
+        // try{
+        //     $request->validate([
+        //         'password' => 'required|min:8',
+        //         'email' => 'required|email',
+        //         'phoneNo' => 'required|min:10',
+
+        //     ]);
+        //     $data = $request->all();
+        //     $check = $this->create($data);
+        //     return view('login');
+        // }
+        // catch(Exception $e){
+        //     return back()->with(['message'=>'PhoneNo&Email should be unique']);
+        // }
+
+        
             $request->validate([
                 'password' => 'required|min:8',
-                'email' => 'required|email',
-                'phoneNo' => 'required|min:10',
-
+                'email' => 'required|email|unique:users',
+                'phoneNo' => 'required|digits:10|unique:users',
+    
             ]);
             $data = $request->all();
             $check = $this->create($data);
-            return view('login');
-        }
-        catch(Exception $e){
-            return back()->with(['message'=>'PhoneNo&Email should be unique']);
-        }
+            return redirect()->intended(route('login'));
+        
         
     }
     public function login(Request $request)
     {
         $request->validate([
+            'email' => 'required_without:phoneNo',
+            'phoneNo' => 'required_without:email',
             'password' => 'required',
         ]);
    

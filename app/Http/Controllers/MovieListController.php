@@ -11,7 +11,8 @@ use Illuminate\Support\Facades\Validator;
 class MovieListController extends Controller{
     public function movieListView(Request $request){
         $query=movie::query();
-        
+        $user = Auth::user()->id;
+        $users=User::where('id',$user)->get();
         if($request->ajax()){
             $query=movie::query();
             // $data=$query->where('name','like','%'.$request->search.'%')
@@ -29,18 +30,23 @@ class MovieListController extends Controller{
                 
             }
             $data=$data->get();
-            return response()->json(['movies'=>$data]);
+            return response()->json(['movies'=>$data,'user'=>$users[0]]);
         }
         else{
             $data=$query->get();
-            return view('home',['movies'=>$data]);}
+            return view('home',['movies'=>$data,'user'=>$users[0]]);}
     }
-    public function movieView($name){
-        $data=movie::where('name',$name)->get();
-        $user = Auth::user()->id;
-        $users=User::where('id',$user)->get();
+    public function movieView(){
+        // $data=movie::where('name',$name)->get();
+        // $user = Auth::user()->id;
+        // $users=User::where('id',$user)->get();
         //return $user;
-        return view('movie',['movie'=>$name, 'available'=>$data[0]['subscription'],'user'=>$users[0]['subscription']]);
+        return view('movie'
+        // ,['movie'=>$name, 'available'=>$data[0]['subscription'],'user'=>$users[0]['subscription']]
+    );
+    }
+    public function paymentView(){
+        return view('payment');
     }
 }
 

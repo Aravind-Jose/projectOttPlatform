@@ -31,9 +31,15 @@
         @foreach($movies as $movie)
         <tr>
             
-            <td><a href="{{ route('movie',$movie['name']) }}">{{$movie['name']}}</a></td>
+            <td>{{$movie['name']}}</td>
             <td>{{$movie['language']}}</td>
-            <td>{{$movie['subscription']}}</td>
+            <td>
+            @if($movie['subscription']==1  && $user['subscription']==0)
+                <button type="button" onclick="window.location='{{ route('payment') }}'">payment</button>
+            @else
+                <button type="button" onclick="window.location='{{ route('movie') }}'">movie</button>
+            @endif
+            </td>
             <td>{{$movie['year']}}</td>
         </tr>
         @endforeach
@@ -54,11 +60,18 @@
                 success:function(data){
                     console.log(data);
                     var movies=data.movies;
+                    var user=data.user;
                     var html='';
                     if(movies.length>0){
                         for(var i=0;i<movies.length;i++){
                             if(movies[i]['language']==language || language=='All'){
-                                html+='<tr><td><a href="{{ route('movie',$movies['+0+']['name']) }}">'+movies[i]['name']+'</a></td><td>'+movies[i]['language']+'</td><td>'+movies[i]['subscription']+'</td><td>'+movies[i]['year']+'</td></tr>';
+                                html+='<tr><td>'+movies[i]['name']+'</td>';
+                                html+='<td>'+movies[i]['language']+'</td>';
+                                if(movies[i]['subscription']==1 && user['subscription']==0)
+                                    html+='<td><button type="button" onclick="window.location=\'{{ route('payment') }}\'">Payment</button></td>';
+                                else
+                                    html+='<td><button type="button" onclick="window.location=\'{{ route('movie') }}\'">Watch</button></td>';
+                                html+='<td>'+movies[i]['year']+'</td></tr>';
                             }
 
                         }
@@ -84,7 +97,13 @@
                     var html='';
                     if(movies.length>0){
                         for(var i=0;i<movies.length;i++){
-                            html+='<tr><td><a href="{{ route('movie',$movie['name']) }}">'+movies[i]['name']+'</a></td><td>'+movies[i]['language']+'</td><td>'+movies[i]['subscription']+'</td><td>'+movies[i]['year']+'</td></tr>';
+                            html+='<tr><td>'+movies[i]['name']+'</td>';
+                                html+='<td>'+movies[i]['language']+'</td>';
+                                  if(movies[i]['subscription']==1)
+                                    html+='<td><button type="button" onclick="window.location=\'{{ route('payment') }}\'">Payment</button></td>';
+                                 else
+                                    html+='<td><button type="button" onclick="window.location=\'{{ route('movie') }}\'">Watch</button></td>';
+                                html+='<td>'+movies[i]['year']+'</td></tr>';
                         }
                     }
                     else{

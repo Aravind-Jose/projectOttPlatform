@@ -2,8 +2,10 @@
 
 namespace App\Http\Controllers;
 use Hash;
+use DB;
 use Illuminate\Support\Facades\Auth;
 use App\Models\User;
+use Session; 
 use Illuminate\Http\Request;
 use \Validator;
 use App\Http\Controllers\MovieListController;
@@ -75,7 +77,7 @@ class UserController extends Controller
 
         
             $request->validate([
-                'password' => 'required|min:8',
+                'password' => 'required|min:8|regex:/[0-9]{10}/|regex:/[a-z]/|regex:/[@$*&^%]/|regex:/[A-Z]/',
                 'email' => 'required|email|unique:users',
                 'phoneNo' => 'required|digits:10|unique:users',
     
@@ -95,12 +97,49 @@ class UserController extends Controller
         ]);
    
         $credentials = $request->only('email', 'password','phoneNo');
-        if ((Auth::attempt(['email' => $credentials['email'], 'password' => $credentials['password']])) || (Auth::attempt(['phoneNo' => $credentials['phoneNo'], 'password' => $credentials['password']])) ) {
+        if ((Auth::attempt(['email' => $credentials['email'], 'password' => $credentials['password']])) || (Auth::attempt(['phoneNo' => $credentials['phoneNo'], 'password' => $credentials['password']])) ) 
+        {
+            if(Auth::check())
+            { 
+                $user = Auth::user();
+              //  $login = Session::where('user_id', Auth::id())->count();
+              $login=DB::select('select count(user_id) from sessions where user_id = ?', [Auth::user()->id]);
+              $login=$login[0]->{'count(user_id)'};      
+              //$login = DB::table('sessions')->where('user_id', Auth::id())->count();
+               // dd($login);
+                    if ($login >= 2)
+                    {
+                        Auth::logout();    
+                        session()->flash('logout', "You are Logged in on other devices");
+                        return "<h1>Maximum device limited reached. Logged in from ".$login." devices .</h1>";
+                        //return redirect()->intended(route('login'));
+                    }
+    
+                
+            }
+            //$session = new Session();
+            //$session->user_id = $user->id;
+            // $session->session_id = session()->getId();
+            // $session->ip_address = request()->ip();
+            // $session->user_agent = request()->userAgent();
+            // $session->last_activity = now();
+            Session::put('user_id', Auth::id());
+            Session::put('session_id', session()->getId());
+            Session::put('ip_address', request()->ip());
+            Session::put('user_agent', request()->userAgent());
+            Session::put('last_activity', now());
+            
+            $data = Session::all();
+            //return $data;
             return redirect()->intended(route('home'));
         }
         else{
             return view('registration');
         }
+    }
+    function logout(Request $request) {
+        Auth::logout();
+        return redirect()->intended(route('login'));
     }
     function loginView() {
         return view('login');

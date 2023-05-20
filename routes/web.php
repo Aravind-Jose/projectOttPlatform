@@ -15,7 +15,8 @@ use App\Http\Controllers\MovieListController;
 */
 
 Route::get('/home',[MovieListController::class, 'movieListView'])->name('home');
-Route::get('/movie',[MovieListController::class, 'movieView'])->name('movie');
+Route::get('/movie/{name}',[MovieListController::class, 'movieView'])->name('movie');
+Route::get('/logout', [UserController::class, 'logout'])->name('logout');
 Route::get('/login', [UserController::class, 'loginView']);
 Route::post('/login', [UserController::class, 'login'])->name('login');
 Route::get('/registration', [UserController::class, 'registrationView']);

@@ -4,9 +4,13 @@
         <title>Movie List</title>
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
     </head>
+    <div>
     <input type="text" id="search" name="search" placeholder="Search">
+    <button type="button" onclick="window.location='{{ route('logout') }}'">Log Out</button>
+    </div>
 <br></br>
 <body>
+
 <h1>Movie List</h1>
 <select name="language" id="language">
     <option value="none" selected disabled hidden>Select a Language</option>    
@@ -35,9 +39,9 @@
             <td>{{$movie['language']}}</td>
             <td>
             @if($movie['subscription']==1  && $user['subscription']==0)
-                <button type="button" onclick="window.location='{{ route('payment') }}'">payment</button>
+                <button type="button" onclick="window.location='{{ route('payment') }}'">Payment</button>
             @else
-                <button type="button" onclick="window.location='{{ route('movie') }}'">movie</button>
+                <button type="button" onclick="window.location='{{ route('movie',$movie['name']) }}'">Watch</button>
             @endif
             </td>
             <td>{{$movie['year']}}</td>
@@ -70,7 +74,7 @@
                                 if(movies[i]['subscription']==1 && user['subscription']==0)
                                     html+='<td><button type="button" onclick="window.location=\'{{ route('payment') }}\'">Payment</button></td>';
                                 else
-                                    html+='<td><button type="button" onclick="window.location=\'{{ route('movie') }}\'">Watch</button></td>';
+                                    html+='<td><button type="button" onclick="window.location=\'{{ route('movie',$movie['name']) }}\'">Watch</button></td>';
                                 html+='<td>'+movies[i]['year']+'</td></tr>';
                             }
 
@@ -102,7 +106,7 @@
                                   if(movies[i]['subscription']==1)
                                     html+='<td><button type="button" onclick="window.location=\'{{ route('payment') }}\'">Payment</button></td>';
                                  else
-                                    html+='<td><button type="button" onclick="window.location=\'{{ route('movie') }}\'">Watch</button></td>';
+                                    html+='<td><button type="button" onclick="window.location=\'{{ route('movie',$movie['name']) }}\'">Watch</button></td>';
                                 html+='<td>'+movies[i]['year']+'</td></tr>';
                         }
                     }

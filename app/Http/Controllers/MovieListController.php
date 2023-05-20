@@ -36,14 +36,18 @@ class MovieListController extends Controller{
             $data=$query->get();
             return view('home',['movies'=>$data,'user'=>$users[0]]);}
     }
-    public function movieView(){
-        // $data=movie::where('name',$name)->get();
-        // $user = Auth::user()->id;
-        // $users=User::where('id',$user)->get();
+    public function movieView($name){
+        try{
+            $data=movie::where('name',$name)->get();
+        $user = Auth::user()->id;
+        $users=User::where('id',$user)->get();
         //return $user;
-        return view('movie'
-        // ,['movie'=>$name, 'available'=>$data[0]['subscription'],'user'=>$users[0]['subscription']]
-    );
+        return view('movie',['movie'=>$name, 'available'=>$data[0]['subscription'],'user'=>$users[0]['subscription']]);
+            }
+        catch(ErrorException $e){
+            return redirect()->intended(route('login'));
+        }
+
     }
     public function paymentView(){
         return view('payment');

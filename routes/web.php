@@ -19,6 +19,6 @@ Route::get('/movie/{name}',[MovieListController::class, 'movieView'])->name('mov
 Route::get('/logout', [UserController::class, 'logout'])->name('logout');
 Route::get('/login', [UserController::class, 'loginView']);
 Route::post('/login', [UserController::class, 'login'])->name('login');
-Route::get('/registration', [UserController::class, 'registrationView']);
+Route::get('/registration', [UserController::class, 'registrationView'])->name('registrationView');
 Route::post('/registration', [UserController::class, 'registration'])->name('registration');
 Route::get('/payment', [MovieListController::class, 'paymentView'])->name('payment');

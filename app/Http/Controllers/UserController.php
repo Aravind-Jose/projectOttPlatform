@@ -77,7 +77,7 @@ class UserController extends Controller
 
         
             $request->validate([
-                'password' => 'required|min:8|regex:/[0-9]{10}/|regex:/[a-z]/|regex:/[@$*&^%]/|regex:/[A-Z]/',
+                'password' => 'required|min:8|regex:/[0-9]/|regex:/[a-z]/|regex:/[@$*&^%]/|regex:/[A-Z]/',
                 'email' => 'required|email|unique:users',
                 'phoneNo' => 'required|digits:10|unique:users',
     
@@ -144,8 +144,31 @@ class UserController extends Controller
     function loginView() {
         return view('login');
     }
-    function registrationView() {
-        return view('registration');
+    function registrationView(Request $request) {
+        $corrections=array("Password should contain capital letter","Password should contain small letter","Password should contain special character","Password should contain number","Password should be of length 8");
+        $correctionsAjax=array();
+        if($request->ajax()){
+            $password=$request->password;
+            if(!preg_match('/[A-Z]/',$password)){
+                array_push($correctionsAjax, "Password should contain capital letter");
+            }
+            if(!preg_match('/[a-z]/',$password)){
+                array_push($correctionsAjax, "Password should contain small letter");
+            }
+            if(!preg_match('/[@$*&^%]/',$password)){
+                array_push($correctionsAjax, "Password should contain special character");
+            }
+            if(!preg_match('/[0-9]/',$password)){
+                array_push($correctionsAjax, "Password should contain number");
+            }
+            if( strlen($password)<8){
+                array_push($correctionsAjax, "Password should be of length 8");
+            }
+            return response()->json(['corrections'=>$correctionsAjax]);
+        }
+        else{
+            return view('registration',['corrections'=>$corrections]);
+        }
     }
     
 

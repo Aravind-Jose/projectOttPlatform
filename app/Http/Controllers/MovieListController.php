@@ -7,6 +7,7 @@ use App\Models\User;
 use App\Models\movie;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
+use App\Mail\SignupMail;
 
 class MovieListController extends Controller{
     public function movieListView(Request $request){
@@ -48,6 +49,24 @@ class MovieListController extends Controller{
             return redirect()->intended(route('login'));
         }
 
+    }
+    public function subscription() {
+        try{
+            //$data=movie::where('name',$name)->get();
+        $user = Auth::user()->id;
+        $users=User::where('id',$user)->get();
+        $details = [
+            'title' => 'Mail from ItSolutionStuff.com',
+            'body' => $users[0]['email'].' has subscribed to our service'
+        ];
+        \Mail::to('hello@g.com')->send(new SignupMail($details));
+        dd("Email is Sent.");
+        //return $user;
+        //return view('movie',['movie'=>$name, 'available'=>$data[0]['subscription'],'user'=>$users[0]['subscription']]);
+            }
+            catch(ErrorException $e){
+                return redirect()->intended(route('login'));
+            }
     }
     public function paymentView(){
         return view('payment');

@@ -16,7 +16,7 @@ return new class extends Migration
             $table->string('email')->unique();
             $table->string('phoneNo')->unique();
             $table->boolean('subscription');
-            $table->timestamp('email_verified_at')->nullable();
+            $table->timestamp('subscriptionDate')->nullable();
             $table->string('password');
             $table->rememberToken();
             $table->timestamps();

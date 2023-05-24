@@ -22,6 +22,7 @@ class User extends Authenticatable
         'phoneNo',
         'password',
         'subscription',
+        'subscriptionDate',
     ];
 
     /**

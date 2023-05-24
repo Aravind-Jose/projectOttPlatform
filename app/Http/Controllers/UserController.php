@@ -10,6 +10,7 @@ use Illuminate\Http\Request;
 use \Validator;
 use App\Http\Controllers\MovieListController;
 Use Exception;
+use Illuminate\Support\Str;
 class UserController extends Controller
 {
     /**
@@ -26,7 +27,6 @@ class UserController extends Controller
     public function create(array $data)
     {
         return User::create([
-            'name'=>$data['name'],
             'subscription'=>false,
             'email' => $data['email'],
             'phoneNo'=>$data['phoneNo'],
@@ -134,7 +134,7 @@ class UserController extends Controller
             return redirect()->intended(route('home'));
         }
         else{
-            return view('registration');
+            return redirect()->intended(route('login'))->withErrors(['message'=>'Invalid Credentials']);
         }
     }
     function logout(Request $request) {
@@ -145,10 +145,13 @@ class UserController extends Controller
         return view('login');
     }
     function registrationView(Request $request) {
-        $corrections=array("Password should contain capital letter","Password should contain small letter","Password should contain special character","Password should contain number","Password should be of length 8");
+        //$corrections=array("Password should contain capital letter","Password should contain small letter","Password should contain special character","Password should contain number","Password should be of length 8");
         $correctionsAjax=array();
+        $correctionPhoneNo=array();
+        $correctionEmail="";
         if($request->ajax()){
             $password=$request->password;
+            $phoneNo=$request->phoneNo;
             if(!preg_match('/[A-Z]/',$password)){
                 array_push($correctionsAjax, "Password should contain capital letter");
             }
@@ -164,10 +167,21 @@ class UserController extends Controller
             if( strlen($password)<8){
                 array_push($correctionsAjax, "Password should be of length 8");
             }
-            return response()->json(['corrections'=>$correctionsAjax]);
+            if(strlen($phoneNo)!=10){
+                //$correctionPhoneNo="PhoneNo should be of length 10";
+                array_push($correctionPhoneNo, "PhoneNo should be of length 10");
+            }
+            if(!ctype_digit($phoneNo)){
+                //$correctionPhoneNo="PhoneNo should contain only numbers";
+                array_push($correctionPhoneNo, "PhoneNo should contain only numbers");
+            }
+            if(!filter_var($request->email, FILTER_VALIDATE_EMAIL)){
+                $correctionEmail="Email is not valid";
+            }
+            return response()->json(['corrections'=>$correctionsAjax,'correctionPhoneNo'=>$correctionPhoneNo,'correctionEmail'=>$correctionEmail]);
         }
         else{
-            return view('registration',['corrections'=>$corrections]);
+            return view('registration',['corrections'=>$correctionsAjax,'correctionPhoneNo'=>$correctionPhoneNo, 'correctionEmail'=>$correctionEmail]);
         }
     }
     

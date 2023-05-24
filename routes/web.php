@@ -3,6 +3,7 @@
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\MovieListController;
+use App\Http\Controllers\PaymentController;
 use App\Mail\SignupMail;
 /*
 |--------------------------------------------------------------------------
@@ -22,5 +23,7 @@ Route::get('/login', [UserController::class, 'loginView']);
 Route::post('/login', [UserController::class, 'login'])->name('login');
 Route::get('/registration', [UserController::class, 'registrationView'])->name('registrationView');
 Route::post('/registration', [UserController::class, 'registration'])->name('registration');
-Route::get('/payment', [MovieListController::class, 'paymentView'])->name('payment');
-Route::get('/sendMail',[MovieListController::class, 'subscription'])->name('sendMail');
+Route::get('/payment', [PaymentController::class, 'tokenGeneration'])->name('tokenGeneration');
+Route::get('/paymentview', [PaymentController::class, 'paymentView'])->name('payment');
+//Route::get('/paymentGateway', [PaymentController::class, 'paymentGateway'])->name('paymentGateway');
+Route::get('/sendMail',[PaymentController::class, 'sendMail'])->name('sendMail');
